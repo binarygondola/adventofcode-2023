@@ -28,6 +28,27 @@ const part1 = (rawInput: string) => {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+const getCycle = (lr: string, current: string, map: Map<string, string[]>) => {
+  let lrIdx = 0;
+  while (!current.endsWith('Z')) {
+    current = map.get(current)![lr[lrIdx % lr.length] === 'L' ? 0 : 1];
+    lrIdx++;
+  }
+
+  return lrIdx;
+}
+
+const gcd = (a: number, b: number): number => {
+  if (b === 0) {
+    return a;
+  }
+  return gcd(b, a % b);
+}
+
+const lcm = (a: number, b: number): number => {
+  return (a * b) / (gcd(a, b));
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
@@ -42,27 +63,19 @@ const part2 = (rawInput: string) => {
     map.set(key, [left, right]);
   }
 
-  let lrIdx = 1;
-  let endsWithA = [...map.keys()].filter((x) => x.endsWith('A'));
-  let currents = endsWithA.map((x) => map.get(x)![lr[0] === 'L' ? 0 : 1]);
-  currents = currents.splice(0, currents.length - 3);
+  let currentPoints = [...map.keys()].filter((x) => x.endsWith('A'));
+  let cycles = [];
 
-  function endsWithZ(arr: string[]) {
-    let s = arr.reduce((prev, curr) => prev + (curr[2] === 'Z' ? '' : 'X'), '');
-    return !s.includes('X');
+  for (let i = 0; i < currentPoints.length; i++) {
+    cycles.push(getCycle(lr, currentPoints[i], map));
   }
 
-  while (!endsWithZ(currents)) {
-    if (lrIdx % 1000000 === 0) {
-      console.log(currents, lrIdx);
-    }
-    for (let i = 0; i < currents.length; i++) {
-      currents[i] = map.get(currents[i])[lr[lrIdx % lr.length] === 'L' ? 0 : 1];
-    }
-    lrIdx++;
+  let sum = 1;
+  for (let i = 0; i < cycles.length; i++) {
+    sum = lcm(cycles[i], sum);
   }
 
-  return lrIdx;
+  return sum;
 };
 
 run({

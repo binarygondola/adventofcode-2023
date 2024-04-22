@@ -54,8 +54,8 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  let rowExpand = [];
-  let colExpand = [];
+  let rowExpand: number[] = [];
+  let colExpand: number[] = [];
 
   for (let i = 0; i < input.length; i++) {
     if (!input[i].includes("#")) {
@@ -81,17 +81,18 @@ const part2 = (rawInput: string) => {
   }));
 
   let sum = 0;
-
-  for (let i = 0; i < positions.length; i++) {
-    let x = positions[i][0];
-    let y = positions[i][1];
-
-    let rowMul = rowExpand.map(a => a > x).lastIndexOf(false);
-    // here
-  }
+  let mul = 999999;
 
   positions.forEach((x, i) => positions.slice(i + 1).forEach((y) => {
     sum += Math.abs(x[0] - y[0]) + Math.abs(x[1] - y[1]);
+
+    let colDistX = colExpand.map(a => a > y[1]).lastIndexOf(false);
+    let colDistY = colExpand.map(a => a > x[1]).lastIndexOf(false);
+
+    let rowDistX = rowExpand.map(a => a > y[0]).lastIndexOf(false);
+    let rowDistY = rowExpand.map(a => a > x[0]).lastIndexOf(false);
+
+    sum += (Math.abs(colDistX - colDistY) + Math.abs(rowDistX - rowDistY)) * mul;
   }))
 
   return sum;
@@ -135,5 +136,5 @@ run({
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });

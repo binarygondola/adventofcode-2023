@@ -13,20 +13,12 @@ const part1 = (rawInput: string) => {
     springs = springs.replaceAll(/^\.+/g, "");
     springs = springs.replaceAll(/\.+$/g, "");
 
-    let parts = springs.split(".");
     let patterns = pattern.split(",").map(Number);
-    let replaced = patterns
-      .map((x) => new Array(x).fill("#").join(""))
-      .join(".");
 
     let hashCount = springs.split("").reduce((a, c) => (c === "#" ? a + 1 : a), 0);
     let sumPatterns = patterns.reduce((a, b) => a + b, 0);
-
     let questionMarks = springs.replaceAll(/[^\?]/g, "");
-
-    let misiingHashes = sumPatterns - hashCount;
-
-    let binary = misiingHashes.toString(2);
+    let missingHashes = sumPatterns - hashCount;
     let maxNum = Math.pow(2, questionMarks.length);
 
     let num = 0;
@@ -36,7 +28,7 @@ const part1 = (rawInput: string) => {
         .split("")
         .map((x, j) => (x === "0" ? '.' : x === "1" ? "#" : x))
         .join("");
-      if (newPattern.split('').reduce((a, b) => b === '#' ? a + 1 : a, 0) === misiingHashes) {
+      if (newPattern.split('').reduce((a, b) => b === '#' ? a + 1 : a, 0) === missingHashes) {
         let tmpPattern = [...newPattern];
         let tmpSprings = springs.split("").map((x, j) => x === "?" ? tmpPattern.shift() : x).join("");
         tmpSprings = tmpSprings.replaceAll(/\.+/g, ".");

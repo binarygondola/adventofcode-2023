@@ -249,7 +249,7 @@ Both parts: -
 
 ```
 Total stars: 31/50
-Total time: 1898069.57ms
+Total time: 949034.785ms
 ```
 
 ```mermaid

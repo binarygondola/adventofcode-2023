@@ -1,7 +1,7 @@
 <!-- Entries between SOLUTIONS and RESULTS tags are auto-generated -->
 
 [![AoC](https://badgen.net/badge/AoC/2023/blue)](https://adventofcode.com/2023)
-[![Node](https://badgen.net/badge/Node/v16.13.0+/blue)](https://nodejs.org/en/download/)
+[![Node](https://badgen.net/badge/Node/v22.13.1+/blue)](https://nodejs.org/en/download/)
 ![Language](https://badgen.net/badge/Language/TypeScript/blue)
 [![Template](https://badgen.net/badge/Template/aocrunner/blue)](https://github.com/caderek/aocrunner)
 
@@ -66,6 +66,9 @@ npm start 1
 ## Results
 
 <!--RESULTS-->
+<details>
+<summary>View results</summary>
+<br>
 
 ```
 Day 01
@@ -132,9 +135,9 @@ Both parts: 6.902ms
 
 ```
 Day 10
-Time part 1: 21.409ms
-Time part 2: 24.122ms
-Both parts: 45.531ms
+Time part 1: 11.622ms
+Time part 2: 11.326ms
+Both parts: 22.949ms
 ```
 
 ```
@@ -167,9 +170,9 @@ Both parts: 879.75ms
 
 ```
 Day 15
-Time part 1: 3.509ms
-Time part 2: 3.734ms
-Both parts: 7.243ms
+Time part 1: 2.689ms
+Time part 2: 3.728ms
+Both parts: 6.416ms
 ```
 
 ```
@@ -242,9 +245,34 @@ Time part 2: -
 Both parts: -
 ```
 
+</details>
+
 ```
 Total stars: 31/50
-Total time: 949058.194ms
+Total time: 1898069.57ms
+```
+
+```mermaid
+
+%%{init: {"pie": {"textPosition": 0.5}} }%%
+pie showData
+title solutions [ms]
+"day 01" : 13.8
+"day 02" : 1.74
+"day 03" : 3.14
+"day 04" : 3.11
+"day 05" : 938454.87
+"day 06" : 10.74
+"day 07" : 14.09
+"day 08" : 12.2
+"day 09" : 6.9
+"day 10" : 22.95
+"day 11" : 75.12
+"day 12" : 9132.59
+"day 13" : 8.47
+"day 14" : 879.75
+"day 15" : 6.42
+"day 16" : 388.9
 ```
 
 <!--/RESULTS-->

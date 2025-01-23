@@ -1,0 +1,129 @@
+diff --git a/node_modules/aocrunner/lib/actions/updateReadMe.js b/node_modules/aocrunner/lib/actions/updateReadMe.js
+index f4174f7..efd7f50 100644
+--- a/node_modules/aocrunner/lib/actions/updateReadMe.js
++++ b/node_modules/aocrunner/lib/actions/updateReadMe.js
+@@ -4,7 +4,7 @@ import { readConfig } from "../io/config.js";
+ const updateReadme = () => {
+   const config = readConfig();
+   const badges = renderDayBadges(config);
+-  const results = renderResults(config);
++  const [results, summary] = renderResults(config);
+   const readme = readReadme().replace(
+     /<!--SOLUTIONS-->(.|\n|\r)+<!--\/SOLUTIONS-->/,
+     `<!--SOLUTIONS-->
+@@ -15,9 +15,16 @@ ${badges}
+   ).replace(
+     /<!--RESULTS-->(.|\n|\r)+<!--\/RESULTS-->/,
+     `<!--RESULTS-->
++<details>
++<summary>View results</summary>
++<br>
+ 
+ ${results}
+ 
++</details>
++
++${summary}
++
+ <!--/RESULTS-->`
+   );
+   saveReadme(readme);
+diff --git a/node_modules/aocrunner/lib/configs/readmeMD.d.ts b/node_modules/aocrunner/lib/configs/readmeMD.d.ts
+index fb99373..6c66f4b 100644
+--- a/node_modules/aocrunner/lib/configs/readmeMD.d.ts
++++ b/node_modules/aocrunner/lib/configs/readmeMD.d.ts
+@@ -1,6 +1,6 @@
+ import type { Setup, Config } from "../types/common";
+ declare const renderDayBadges: (config: Config) => string;
+-declare const renderResults: (config: Config) => string;
++declare const renderResults: (config: Config) => string[];
+ declare const readmeMD: ({ language, year }: Setup, startCmd: string, installCmd: string, config: Config) => string;
+ export { renderDayBadges, renderResults };
+ export default readmeMD;
+diff --git a/node_modules/aocrunner/lib/configs/readmeMD.js b/node_modules/aocrunner/lib/configs/readmeMD.js
+index 3043ef4..2d612b1 100644
+--- a/node_modules/aocrunner/lib/configs/readmeMD.js
++++ b/node_modules/aocrunner/lib/configs/readmeMD.js
+@@ -8,6 +8,7 @@ const renderDayBadges = (config) => {
+     return color !== "gray" ? `[${badge}](src/day${day})` : badge;
+   }).join("\n");
+ };
++
+ const renderResults = (config) => {
+   let totalTime = 0;
+   let totalStars = 0;
+@@ -36,13 +37,39 @@ const renderResults = (config) => {
+       \`\`\`
+     `;
+   }).join("\n\n");
++
++  const resultTimes = config.days.map(({ part1, part2 }, index) => {
++    const day = String(index + 1).padStart(2, "0");
++    let timeBoth = 0;
++    if (part1.solved) {
++      totalTime += part1.time ?? 0;
++      timeBoth += part1.time ?? 0;
++    }
++    if (part2.solved) {
++      totalTime += part2.time ?? 0;
++      timeBoth += part2.time ?? 0;
++    }
++    let time = timeBoth !== 0 ? '"day ' + day + '" : ' + toFixed(timeBoth, 2) : undefined
++    return time !== undefined ? `${time}` : undefined;
++  });
++
++  const mermaid = `
++  %%{init: {"pie": {"textPosition": 0.5}} }%%
++pie showData
++    title solutions [ms]
++    ${resultTimes.filter(r => r !== undefined).join('\n')}`
++
+   const summary = stripIndents`
+     \`\`\`
+     Total stars: ${totalStars}/50
+     Total time: ${toFixed(totalTime)}ms
+     \`\`\`
++
++    \`\`\`mermaid
++    ${mermaid}
++    \`\`\`
+   `;
+-  return [results, summary].join("\n\n");
++  return [results, summary];
+ };
+ const readmeMD = ({ language, year }, startCmd, installCmd, config) => {
+   const lang = language === "ts" ? "TypeScript" : "JavaScript";
+@@ -52,7 +79,7 @@ const readmeMD = ({ language, year }, startCmd, installCmd, config) => {
+     <!-- Entries between SOLUTIONS and RESULTS tags are auto-generated -->
+ 
+     [![AoC](https://badgen.net/badge/AoC/${year}/blue)](https://adventofcode.com/${year})
+-    [![Node](https://badgen.net/badge/Node/v16.13.0+/blue)](https://nodejs.org/en/download/)
++    [![Node](https://badgen.net/badge/Node/v20.11.1+/blue)](https://nodejs.org/en/download/)
+     ![Language](https://badgen.net/badge/Language/${lang}/blue)
+     [![Template](https://badgen.net/badge/Template/aocrunner/blue)](https://github.com/caderek/aocrunner)
+ 
+@@ -66,12 +93,14 @@ const readmeMD = ({ language, year }, startCmd, installCmd, config) => {
+ 
+     <!--/SOLUTIONS-->
+ 
+-    _Click a badge to go to the specific day._
++    _Click a badge to go to a solution for the specific day._
+ 
+     ---
+ 
+     ## Installation
+-
++    <details>
++    <summary>View installation</summary>
++    <br>
+     \`\`\`
+     ${installCmd}
+     \`\`\`
+@@ -88,6 +117,7 @@ const readmeMD = ({ language, year }, startCmd, installCmd, config) => {
+     ${startCmd} 1
+     \`\`\`
+ 
++    </details>
+     ---
+ 
+     ## Results

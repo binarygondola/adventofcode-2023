@@ -7,7 +7,8 @@
     "start": "aocrunner day",
     "build": "aocrunner build",
     "format": "prettier -w src",
-    "update:readme": "aocrunner update:readme"
+    "update:readme": "aocrunner update:readme",
+    "postinstall": "patch-package"
   },
   "keywords": [
     "aoc"
@@ -16,10 +17,12 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.11.6",
-    "aocrunner": "^1.9.6",
+    "aocrunner": "^1.10.0",
     "prettier": "^2.8.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "patch-package": "^8.0.0"
+  },
   "engines": {
     "node": ">=16.13.0"
   }

@@ -72,8 +72,45 @@ const part1 = (rawInput: string) => {
 
 };
 
+const fromHex = (a: string): [number, string] => {
+  let b = a.slice(2, a.length);
+  let hexdist = b.slice(0, b.length - 2);
+  let dir = b.split("")[b.length - 2];
+  let decdist = parseInt(hexdist, 16);
+  return [decdist, dir];
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
+
+  let arr = [[0, 0]];
+
+  for (let line of input) {
+    let a = line.split(' ').pop();
+    let [distance, direction] = fromHex(a!);
+
+    let [r, c] = arr[arr.length - 1];
+    switch (direction) {
+      case '0': //R
+        c += distance;
+        arr.push([r, c]);
+        break;
+      case '1': //D
+        r += distance;
+        arr.push([r, c]);
+        break;
+      case '2': //L
+        c -= distance;
+        arr.push([r, c]);
+        break;
+      case '3': //U
+        r -= distance;
+        arr.push([r, c]);
+        break;
+    }
+  }
+
+  console.log(arr);
 
   return;
 };
@@ -82,20 +119,20 @@ run({
   part1: {
     tests: [
       {
-        input: `L 5 (#8ceee2)
+        input: `R 6 (#70c710)
+D 5 (#0dc571)
+L 2 (#5713f0)
+D 2 (#d2c081)
+R 2 (#59c680)
+D 2 (#411b91)
+L 5 (#8ceee2)
 U 2 (#caa173)
 L 1 (#1b58a2)
 U 2 (#caa171)
 R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
-U 2 (#7a21e3)
-R 6 (#70c710)
-D 5 (#0dc571)
-L 2 (#5713f0)
-D 2 (#d2c081)
-R 2 (#59c680)
-D 2 (#411b91)`,
+U 2 (#7a21e3)`,
         expected: 62,
       },
       {
@@ -114,13 +151,46 @@ D 5 (#7a21e3)`,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: 0,
-      // },
+      {
+        input: `R 6 (#70c710)
+D 5 (#0dc571)
+L 2 (#5713f0)
+D 2 (#d2c081)
+R 2 (#59c680)
+D 2 (#411b91)
+L 5 (#8ceee2)
+U 2 (#caa173)
+L 1 (#1b58a2)
+U 2 (#caa171)
+R 2 (#7807d2)
+U 3 (#a77fa3)
+L 2 (#015232)
+U 2 (#7a21e3)`,
+        expected: 62,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
+
+
+/*
+
+  #70c710 = R 461937
+  #0dc571 = D 56407
+  #5713f0 = R 356671
+  #d2c081 = D 863240
+  #59c680 = R 367720
+  #411b91 = D 266681
+  #8ceee2 = L 577262
+  #caa173 = U 829975
+  #1b58a2 = L 112010
+  #caa171 = D 829975
+  #7807d2 = L 491645
+  #a77fa3 = U 686074
+  #015232 = L 5411
+  #7a21e3 = U 500254
+
+*/
